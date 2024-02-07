@@ -21,39 +21,55 @@ var (
 
 var orangeColorSGR = []color.Attribute{38, 5, 208}
 
-var HighlightString = color.New(orangeColorSGR...).SprintFunc()
-var HighlightPassingString = color.New(color.FgGreen).SprintFunc()
-var HighlightFailingString = color.New(color.FgRed).SprintFunc()
-var HighlightGrayString = color.New(color.FgHiBlack).SprintFunc()
+var (
+	HighlightString = color.New().SprintFunc()
+	HighlightPassingString = color.New().SprintFunc()
+	HighlightFailingString = color.New().SprintFunc()
+	HighlightGrayString = color.New().SprintFunc()
+)
 
-var PassingColorScheme = pp.ColorScheme{
-	String:          pp.Green,
-	StringQuotation: pp.Green | pp.Bold,
-	FieldName:       pp.White,
-	Integer:         pp.Blue | pp.Bold,
-	StructName:      pp.NoColor,
-	Bool:            pp.Cyan | pp.Bold,
-	Float:           pp.Magenta | pp.Bold,
-	EscapedChar:     pp.Magenta | pp.Bold,
-	PointerAdress:   pp.Blue | pp.Bold,
-	Nil:             pp.Cyan | pp.Bold,
-	Time:            pp.Blue | pp.Bold,
-	ObjectLength:    pp.Blue,
-}
+var PassingColorScheme pp.ColorScheme
+var FailingColorScheme pp.ColorScheme
 
-var FailingColorScheme = pp.ColorScheme{
-	Bool:            pp.Cyan | pp.Bold,
-	Integer:         pp.Blue | pp.Bold,
-	Float:           pp.Magenta | pp.Bold,
-	String:          pp.Red,
-	StringQuotation: pp.Red | pp.Bold,
-	EscapedChar:     pp.Magenta | pp.Bold,
-	FieldName:       pp.Yellow,
-	PointerAdress:   pp.Blue | pp.Bold,
-	Nil:             pp.Cyan | pp.Bold,
-	Time:            pp.Blue | pp.Bold,
-	StructName:      pp.White,
-	ObjectLength:    pp.Blue,
+func InitColorCodes(colorCodes bool) {
+
+	if colorCodes {
+		
+		HighlightString = color.New(orangeColorSGR...).SprintFunc()
+		HighlightPassingString = color.New(color.FgGreen).SprintFunc()
+		HighlightFailingString = color.New(color.FgRed).SprintFunc()
+		HighlightGrayString = color.New(color.FgHiBlack).SprintFunc()
+
+		FailingColorScheme = pp.ColorScheme{
+			Bool:            pp.Cyan | pp.Bold,
+			Integer:         pp.Blue | pp.Bold,
+			Float:           pp.Magenta | pp.Bold,
+			String:          pp.Red,
+			StringQuotation: pp.Red | pp.Bold,
+			EscapedChar:     pp.Magenta | pp.Bold,
+			FieldName:       pp.Yellow,
+			PointerAdress:   pp.Blue | pp.Bold,
+			Nil:             pp.Cyan | pp.Bold,
+			Time:            pp.Blue | pp.Bold,
+			StructName:      pp.White,
+			ObjectLength:    pp.Blue,
+		}
+
+		PassingColorScheme = pp.ColorScheme{
+			String:          pp.Green,
+			StringQuotation: pp.Green | pp.Bold,
+			FieldName:       pp.White,
+			Integer:         pp.Blue | pp.Bold,
+			StructName:      pp.NoColor,
+			Bool:            pp.Cyan | pp.Bold,
+			Float:           pp.Magenta | pp.Bold,
+			EscapedChar:     pp.Magenta | pp.Bold,
+			PointerAdress:   pp.Blue | pp.Bold,
+			Nil:             pp.Cyan | pp.Bold,
+			Time:            pp.Blue | pp.Bold,
+			ObjectLength:    pp.Blue,
+		}
+	}
 }
 
 const (

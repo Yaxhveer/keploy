@@ -14,6 +14,7 @@ import (
 	"github.com/TheZeroSlave/zapsentry"
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/spf13/cobra"
+	"go.keploy.io/server/pkg/models"
 	"go.keploy.io/server/pkg/platform/fs"
 	"go.keploy.io/server/utils"
 	"go.uber.org/zap"
@@ -32,6 +33,7 @@ type Root struct {
 }
 
 var debugMode bool
+var colorCodes bool
 
 type colorConsoleEncoder struct {
 	*zapcore.EncoderConfig
@@ -127,11 +129,18 @@ func setupLogger() *zap.Logger {
 		logCfg.EncoderConfig.EncodeCaller = nil
 	}
 
+	
+	models.InitColorCodes(colorCodes)
+	if !colorCodes {
+		logCfg.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	}
+	
 	logger, err := logCfg.Build()
 	if err != nil {
 		log.Panic(Emoji, "failed to start the logger for the CLI", err)
 		return nil
 	}
+	
 	return logger
 }
 
@@ -236,9 +245,9 @@ var rootExamples = `
 	keploy generate-config -p "/path/to/localdir"
 `
 
-func checkForDebugFlag(args []string) bool {
+func checkForFlag(args []string, flag string) bool {
 	for _, arg := range args {
-		if arg == "--debug" {
+		if arg == flag {
 			return true
 		}
 	}
@@ -274,8 +283,12 @@ func (r *Root) execute() {
 
 	rootCmd.PersistentFlags().BoolVar(&debugMode, "debug", false, "Run in debug mode")
 
+	rootCmd.PersistentFlags().BoolVar(&colorCodes, "colorCodes", false, "Run in debug mode")
+
 	// Manually parse flags to determine debug mode
-	debugMode = checkForDebugFlag(os.Args[1:])
+	debugMode = checkForFlag(os.Args[1:], "--debug")
+
+	colorCodes = checkForFlag(os.Args[1:], "--colorCodes")
 
 	//Set the version template for version command
 	rootCmd.SetVersionTemplate(`{{with .Version}}{{printf "Keploy %s" .}}{{end}}{{"\n"}}`)
